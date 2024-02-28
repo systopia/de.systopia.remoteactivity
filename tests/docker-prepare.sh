@@ -1,6 +1,8 @@
 #!/bin/bash
 set -eu -o pipefail
 
+REMOTETOOLS_BRANCH=master
+
 EXT_DIR=$(dirname "$(dirname "$(realpath "$0")")")
 EXT_NAME=$(basename "$EXT_DIR")
 
@@ -27,6 +29,8 @@ else
     -i /var/www/html/sites/default/civicrm.settings.php
   civicrm-docker-install
 
+  cv ext:download "de.systopia.remotetools@https://github.com/systopia/de.systopia.remotetools/archive/refs/heads/$REMOTETOOLS_BRANCH.zip"
+  composer --working-dir="$EXT_DIR/de.systopia.remotetools" update --no-dev --no-progress --prefer-dist --optimize-autoloader
   cv ext:enable "$EXT_NAME"
 
   # For headless tests these files need to exist.
