@@ -51,6 +51,7 @@ final class RemoteActivityTest extends AbstractRemoteActivityHeadlessTestCase {
     $activity = ActivityFixture::addFixture();
     $result = RemoteActivity::get()
       ->setProfile('default')
+      ->addSelect('*', 'CAN_delete', 'CAN_update')
       ->execute();
 
     static::assertCount(1, $result);
@@ -82,6 +83,7 @@ final class RemoteActivityTest extends AbstractRemoteActivityHeadlessTestCase {
   public function testGetFields(): void {
     $result = RemoteActivity::getFields()
       ->setProfile('default')
+      ->addSelect('*', 'CAN_delete', 'CAN_update')
       ->execute();
 
     $fields = $result->indexBy('name')->getArrayCopy();

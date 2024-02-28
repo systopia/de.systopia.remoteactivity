@@ -1,6 +1,10 @@
 #!/bin/bash
 set -eu -o pipefail
 
+XCM_VERSION=1.12.0
+IDENTITYTRACKER_BRANCH=master
+REMOTETOOLS_BRANCH=master
+
 EXT_DIR=$(dirname "$(dirname "$(realpath "$0")")")
 EXT_NAME=$(basename "$EXT_DIR")
 
@@ -27,6 +31,10 @@ else
     -i /var/www/html/sites/default/civicrm.settings.php
   civicrm-docker-install
 
+  cv ext:download "de.systopia.xcm@https://github.com/systopia/de.systopia.xcm/releases/download/$XCM_VERSION/de.systopia.xcm-$XCM_VERSION.zip"
+  cv ext:download "de.systopia.identitytracker@https://github.com/systopia/de.systopia.identitytracker/archive/refs/heads/$IDENTITYTRACKER_BRANCH.zip"
+  cv ext:download "de.systopia.remotetools@https://github.com/systopia/de.systopia.remotetools/archive/refs/heads/$REMOTETOOLS_BRANCH.zip"
+  composer --working-dir="$EXT_DIR/../de.systopia.remotetools" update --no-dev --no-progress --prefer-dist --optimize-autoloader
   cv ext:enable "$EXT_NAME"
 
   # For headless tests these files need to exist.

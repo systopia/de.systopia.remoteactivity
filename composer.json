@@ -1,4 +1,7 @@
 {
+    "name": "systopia/de.systopia.remoteactivity",
+    "type": "civicrm-ext",
+    "license": "AGPL-3.0-or-later",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {

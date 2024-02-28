@@ -4,7 +4,6 @@ includes:
 parameters:
 	scanDirectories:
 		- ci/vendor/civicrm/civicrm-core/CRM/
-		- de.systopia.remotetools/Civi/RemoteTools/
 	bootstrapFiles:
 		- ci/vendor/autoload.php
 	# Because we test with different versions in CI we have unmatched errors

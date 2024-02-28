@@ -3,9 +3,6 @@
 This extension exposes CiviCRM activities via the
 [CiviRemote framework](https://github.com/systopia/de.systopia.remotetools).
 
-Note: Currently this extension depends on the `remote-tools-api4` branch of
-[de.systopia.remotetools](https://github.com/systopia/de.systopia.remotetools).
-
 ## We need your support
 This CiviCRM extension is provided as Free and Open Source Software, 
 and we are happy if you find it useful. However, we have put a lot of work into it 

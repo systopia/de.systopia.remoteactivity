@@ -5,7 +5,9 @@ use Composer\Autoload\ClassLoader;
 
 ini_set('memory_limit', '2G');
 
-require_once __DIR__ . '/../../vendor/autoload.php';
+if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
+  require_once __DIR__ . '/../../vendor/autoload.php';
+}
 
 // Make CRM_Funding_ExtensionUtil available.
 require_once __DIR__ . '/../../remoteactivity.civix.php';

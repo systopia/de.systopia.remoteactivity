@@ -7,6 +7,5 @@ includes:
 parameters:
 	scanDirectories:
 		- {VENDOR_DIR}/civicrm/civicrm-core/CRM/
-		- {EXT_DIR}/de.systopia.remotetools/Civi/RemoteTools/
 	bootstrapFiles:
 		- {VENDOR_DIR}/autoload.php
