@@ -37,8 +37,8 @@ function remoteactivity_civicrm_container(ContainerBuilder $container): void {
  */
 function remoteactivity_civicrm_permission(array &$permissions): void {
   $permissions[Permissions::ACCESS_REMOTE_ACTIVITY] = [
-    E::ts('CiviCRM: remote access to Activity'),
-    E::ts('Access remote API of the Activity entity'),
+    'label' => E::ts('CiviCRM: remote access to Activity'),
+    'description' => E::ts('Access remote API of the Activity entity'),
   ];
 }
 
