@@ -14,9 +14,9 @@
     <url desc="Support">https://github.com/systopia/de.systopia.remoteactivity</url>
     <url desc="Licensing">https://www.gnu.org/licenses/agpl-3.0.html</url>
   </urls>
-  <releaseDate></releaseDate>
-  <version>0.1-dev</version>
-  <develStage>dev</develStage>
+  <releaseDate>2024-02-05</releaseDate>
+  <version>0.1.1</version>
+  <develStage>beta</develStage>
   <compatibility>
     <ver>5.58</ver>
   </compatibility>
