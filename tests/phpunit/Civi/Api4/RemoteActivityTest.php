@@ -25,7 +25,6 @@ use Civi\Remoteactivity\Fixtures\ActivityFixture;
 
 /**
  * @covers \Civi\Api4\RemoteActivity
- * @covers \Civi\Remoteactivity\RemoteActivityDefaultEntityProfile
  *
  * @group headless
  */
@@ -34,7 +33,7 @@ final class RemoteActivityTest extends AbstractRemoteActivityHeadlessTestCase {
   public function testDelete(): void {
     $activity = ActivityFixture::addFixture();
     $result = RemoteActivity::delete()
-      ->setProfile('default')
+      ->setProfile('test')
       ->addWhere('id', '=', $activity['id'])
       ->execute();
 
@@ -43,14 +42,14 @@ final class RemoteActivityTest extends AbstractRemoteActivityHeadlessTestCase {
 
   public function testGet(): void {
     $result = RemoteActivity::get()
-      ->setProfile('default')
+      ->setProfile('test')
       ->execute();
 
     static::assertCount(0, $result);
 
     $activity = ActivityFixture::addFixture();
     $result = RemoteActivity::get()
-      ->setProfile('default')
+      ->setProfile('test')
       ->addSelect('*', 'CAN_delete', 'CAN_update')
       ->execute();
 
@@ -60,7 +59,7 @@ final class RemoteActivityTest extends AbstractRemoteActivityHeadlessTestCase {
     static::assertFalse($result->single()['CAN_update']);
 
     $result = RemoteActivity::get()
-      ->setProfile('default')
+      ->setProfile('test')
       ->addWhere('id', '!=', $activity['id'])
       ->execute();
 
@@ -76,14 +75,13 @@ final class RemoteActivityTest extends AbstractRemoteActivityHeadlessTestCase {
   public function testGetCreateForm(): void {
     $this->expectException(UnauthorizedException::class);
     RemoteActivity::getCreateForm()
-      ->setProfile('default')
+      ->setProfile('test')
       ->execute();
   }
 
   public function testGetFields(): void {
     $result = RemoteActivity::getFields()
-      ->setProfile('default')
-      ->addSelect('*', 'CAN_delete', 'CAN_update')
+      ->setProfile('test')
       ->execute();
 
     $fields = $result->indexBy('name')->getArrayCopy();
@@ -96,7 +94,7 @@ final class RemoteActivityTest extends AbstractRemoteActivityHeadlessTestCase {
     $activity = ActivityFixture::addFixture();
     $this->expectException(UnauthorizedException::class);
     RemoteActivity::getUpdateForm()
-      ->setProfile('default')
+      ->setProfile('test')
       ->setId($activity['id'])
       ->execute();
   }
