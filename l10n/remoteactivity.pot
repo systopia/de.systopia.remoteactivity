@@ -1,0 +1,8 @@
+#: remoteactivity.php
+msgid "CiviRemote: remote access to Activity"
+msgstr ""
+
+#: remoteactivity.php
+msgid "Access remote API of the Activity entity."
+msgstr ""
+
