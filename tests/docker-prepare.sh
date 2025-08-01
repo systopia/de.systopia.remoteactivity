@@ -34,6 +34,9 @@ else
   cv ext:download "de.systopia.xcm@https://github.com/systopia/de.systopia.xcm/releases/download/$XCM_VERSION/de.systopia.xcm-$XCM_VERSION.zip"
   cv ext:download "de.systopia.identitytracker@https://github.com/systopia/de.systopia.identitytracker/archive/refs/heads/$IDENTITYTRACKER_BRANCH.zip"
   cv ext:download "de.systopia.remotetools@https://github.com/systopia/de.systopia.remotetools/archive/refs/heads/$REMOTETOOLS_BRANCH.zip"
+  # In the container used for tests there seems to be psr/cache 1 installed somewhere.
+  # This conflicts with symfony/cache >=6, thus we use version 5 here.
+  composer --working-dir="$EXT_DIR/../de.systopia.remotetools" require --no-update 'symfony/cache:^5'
   composer --working-dir="$EXT_DIR/../de.systopia.remotetools" update --no-dev --no-progress --prefer-dist --optimize-autoloader
   cv ext:enable "$EXT_NAME"
 

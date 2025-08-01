@@ -21,9 +21,9 @@ namespace Civi\Remoteactivity;
 
 use Civi\RemoteTools\EntityProfile\ReadOnlyRemoteEntityProfile;
 
-final class RemoteActivityDefaultEntityProfile extends ReadOnlyRemoteEntityProfile {
+final class RemoteActivityTestEntityProfile extends ReadOnlyRemoteEntityProfile {
 
-  public const NAME = 'default';
+  public const NAME = 'test';
 
   public const ENTITY_NAME = 'Activity';
 

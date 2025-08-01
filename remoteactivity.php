@@ -6,10 +6,8 @@ require_once 'remoteactivity.civix.php';
 // phpcs:enable
 
 use Civi\Remoteactivity\Api4\Permissions;
-use Civi\Remoteactivity\RemoteActivityDefaultEntityProfile;
-use Civi\RemoteTools\EntityProfile\ReadOnlyRemoteEntityProfile;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use CRM_Remoteactivity_ExtensionUtil as E;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Implements hook_civicrm_config().
@@ -24,9 +22,8 @@ function remoteactivity_civicrm_config(&$config): void {
  * Implements hook_civicrm_container().
  */
 function remoteactivity_civicrm_container(ContainerBuilder $container): void {
-  if (class_exists(ReadOnlyRemoteEntityProfile::class)) {
-    $container->autowire(RemoteActivityDefaultEntityProfile::class)
-      ->addTag(RemoteActivityDefaultEntityProfile::SERVICE_TAG);
+  if (function_exists('_remoteactivity_test_civicrm_container')) {
+    _remoteactivity_test_civicrm_container($container);
   }
 }
 

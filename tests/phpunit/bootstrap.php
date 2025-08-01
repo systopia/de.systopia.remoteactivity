@@ -2,6 +2,8 @@
 declare(strict_types = 1);
 
 use Composer\Autoload\ClassLoader;
+use Civi\Remoteactivity\RemoteActivityTestEntityProfile;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 ini_set('memory_limit', '2G');
 
@@ -28,6 +30,11 @@ $loader->register();
 
 // Ensure function ts() is available - it's declared in the same file as CRM_Core_I18n
 \CRM_Core_I18n::singleton();
+
+function _remoteactivity_test_civicrm_container(ContainerBuilder $container): void {
+  $container->autowire(RemoteActivityTestEntityProfile::class)
+    ->addTag(RemoteActivityTestEntityProfile::SERVICE_TAG);
+}
 
 /**
  * Call the "cv" command.
