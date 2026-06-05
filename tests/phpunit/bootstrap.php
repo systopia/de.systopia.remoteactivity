@@ -7,33 +7,77 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 ini_set('memory_limit', '2G');
 
+if (file_exists(__DIR__ . '/bootstrap.local.php')) {
+  require_once __DIR__ . '/bootstrap.local.php';
+}
+
+// phpcs:disable Drupal.Functions.DiscouragedFunctions.Discouraged
+eval(cv('php:boot --level=classloader', 'phpcode'));
+// phpcs:enable
+
 if (file_exists(__DIR__ . '/../../vendor/autoload.php')) {
   require_once __DIR__ . '/../../vendor/autoload.php';
 }
 
-// Make CRM_Funding_ExtensionUtil available.
+// Make CRM_Remoteactivity_ExtensionUtil available.
 require_once __DIR__ . '/../../remoteactivity.civix.php';
-
-// phpcs:disable
-eval(cv('php:boot --level=classloader', 'phpcode'));
-// phpcs:enable
 
 // phpcs:disable PSR1.Files.SideEffects
 
-// Allow autoloading of PHPUnit helper classes in this extension.
-$loader = new ClassLoader();
-$loader->add('CRM_', [__DIR__ . '/../..', __DIR__]);
-$loader->addPsr4('Civi\\', [__DIR__ . '/../../Civi', __DIR__ . '/Civi']);
-$loader->add('api_', [__DIR__ . '/../..', __DIR__]);
-$loader->addPsr4('api\\', [__DIR__ . '/../../api', __DIR__ . '/api']);
-$loader->register();
+// Add test classes to class loader.
+addExtensionDirToClassLoader(__DIR__);
 
-// Ensure function ts() is available - it's declared in the same file as CRM_Core_I18n
-\CRM_Core_I18n::singleton();
+// Add classes for tests without booted CiviCRM environment, i.e. simple PHPUnit tests.
+addExtensionToClassLoader('de.systopia.remoteactivity');
 
+if (!function_exists('ts')) {
+  // Ensure function ts() is available - it's declared in the same file as CRM_Core_I18n in CiviCRM < 5.74.
+  // In later versions the function is registered following the composer conventions.
+  \CRM_Core_I18n::singleton();
+}
+
+/**
+ * Modify DI container for tests.
+ */
 function _remoteactivity_test_civicrm_container(ContainerBuilder $container): void {
   $container->autowire(RemoteActivityTestEntityProfile::class)
     ->addTag(RemoteActivityTestEntityProfile::SERVICE_TAG);
+}
+
+function addExtensionToClassLoader(string $extension): void {
+  // Support symlinks. Current working dir should be the extensions' directory
+  // relative to the "ext" directory.
+  // Note: getcwd() is not used because it returns the real path.
+  /** @var string $currentWorkingDir */
+  $currentWorkingDir = getenv('PWD');
+  $candidates = [
+    dirname($currentWorkingDir) . '/' . $extension,
+    __DIR__ . '/../../../' . $extension,
+  ];
+
+  foreach ($candidates as $candidate) {
+    $real = realpath($candidate);
+    if ($real !== FALSE && is_dir($real)) {
+      addExtensionDirToClassLoader($real);
+
+      return;
+    }
+  }
+
+  throw new RuntimeException("Extension path not found for: $extension");
+}
+
+function addExtensionDirToClassLoader(string $extensionDir): void {
+  $loader = new ClassLoader();
+  $loader->add('CRM_', [$extensionDir]);
+  $loader->addPsr4('Civi\\', [$extensionDir . '/Civi']);
+  $loader->add('api_', [$extensionDir]);
+  $loader->addPsr4('api\\', [$extensionDir . '/api']);
+  $loader->register();
+
+  if (file_exists($extensionDir . '/autoload.php')) {
+    require_once $extensionDir . '/autoload.php';
+  }
 }
 
 /**
@@ -43,6 +87,7 @@ function _remoteactivity_test_civicrm_container(ContainerBuilder $container): vo
  *   The rest of the command to send.
  * @param string $decode
  *   Ex: 'json' or 'phpcode'.
+ *
  * @return mixed
  *   Response output (if the command executed normally).
  *   For 'raw' or 'phpcode', this will be a string. For 'json', it could be any JSON value.
@@ -65,7 +110,7 @@ function cv(string $cmd, string $decode = 'json') {
   $result = stream_get_contents($pipes[1]);
   fclose($pipes[1]);
   if (proc_close($process) !== 0) {
-    throw new RuntimeException("Command failed ($cmd):\n$result");
+    throw new \RuntimeException("Command failed ($cmd):\n$result");
   }
   switch ($decode) {
     case 'raw':
@@ -74,14 +119,15 @@ function cv(string $cmd, string $decode = 'json') {
     case 'phpcode':
       // If the last output is /*PHPCODE*/, then we managed to complete execution.
       if (substr(trim($result), 0, 12) !== '/*BEGINPHP*/' || substr(trim($result), -10) !== '/*ENDPHP*/') {
-        throw new RuntimeException("Command failed ($cmd):\n$result");
+        throw new \RuntimeException("Command failed ($cmd):\n$result");
       }
+
       return $result;
 
     case 'json':
       return json_decode($result, TRUE);
 
     default:
-      throw new RuntimeException("Bad decoder format ($decode)");
+      throw new \RuntimeException("Bad decoder format ($decode)");
   }
 }
