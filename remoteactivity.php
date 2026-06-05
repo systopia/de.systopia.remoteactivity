@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
  *
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_config/
  */
-function remoteactivity_civicrm_config(&$config): void {
+function remoteactivity_civicrm_config(\CRM_Core_Config $config): void {
   _remoteactivity_civix_civicrm_config($config);
 }
 
@@ -30,7 +30,13 @@ function remoteactivity_civicrm_container(ContainerBuilder $container): void {
 /**
  * Implements hook_civicrm_permission().
  *
- * @phpstan-param array<string, string|array{string, string}> $permissions
+ * @phpstan-param array<string, array{
+ *   label: string,
+ *   description?: string,
+ *   disabled?: bool,
+ *   implies?: list<string>,
+ *   implied_by?: list<string>,
+ * }> $permissions
  */
 function remoteactivity_civicrm_permission(array &$permissions): void {
   $permissions[Permissions::ACCESS_REMOTE_ACTIVITY] = [

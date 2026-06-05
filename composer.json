@@ -1,10 +1,36 @@
 {
     "name": "systopia/de.systopia.remoteactivity",
+    "description": "Exposes CiviCRM activities via the CiviRemote framework.",
     "type": "civicrm-ext",
     "license": "AGPL-3.0-or-later",
+    "authors": [
+        {
+            "name": "SYSTOPIA",
+            "email": "info@systopia.de",
+            "homepage": "https://www.systopia.de"
+        }
+    ],
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "config": {
+        "prepend-autoloader": false,
+        "sort-packages": true,
+        "platform": {
+        }
+    },
+    "require": {
+        "php": "^8.1",
+        "civicrm/civicrm-core": ">=5.76",
+        "civicrm/civicrm-packages": ">=5.76",
+        "systopia/de.systopia.remotetools": "^1.2"
+    },
+    "autoload": {
+        "classmap": ["ComposerHelper.php"]
+    },
     "scripts": {
+        "pre-update-cmd": [
+            "Remoteactivity\\ComposerHelper::preUpdate"
+        ],
         "composer-phpcs": [
             "@composer --working-dir=tools/phpcs"
         ],
@@ -26,7 +52,7 @@
             "@php tools/phpcs/vendor/bin/phpcbf"
         ],
         "phpstan": [
-            "@php tools/phpstan/vendor/bin/phpstan"
+            "@php tools/phpstan/vendor/bin/phpstan -v"
         ],
         "phpunit": [
             "@php tools/phpunit/vendor/bin/simple-phpunit --coverage-text"
@@ -37,6 +63,13 @@
             "@phpunit"
         ]
     },
+    "conflict": {
+        "pear/mail_mime": "<1.10.2",
+        "pear/pear-core-minimal": "<1.10.16"
+    },
+    "_comment": [
+      "PEAR_ErrorStack::singleton() overridden in CRM_Core_Error is static since pear/pear-core v1.10.16"
+    ],
     "extra": {
         "branch-alias": {
             "dev-master": "1.1.x-dev"
